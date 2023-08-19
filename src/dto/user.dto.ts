@@ -6,35 +6,40 @@ export class UserDto {
   @IsEmail()
   email: string
 
-  @ApiProperty({ example: 'R#k9P&mS@7eY\n', description: 'user strong password' })
+  @ApiProperty({ example: 'R#k9P&mS@7eY\n', description: 'user strong password', type: String })
   @IsString()
   @Length(4, 100)
   password: string
 }
 
 export class GetUsersDto {
-  @ApiProperty({ example: 'user@email.com', description: 'user email' })
+  @ApiProperty({ example: 'user@email.com', description: 'user email', type: String })
   @IsEmail()
   email: string
 
-  @ApiProperty({ example: 'R#k9P&mS@7eY\n', description: 'user strong password' })
+  @ApiProperty({ example: 'R#k9P&mS@7eY\n', description: 'user strong password', type: String })
   @IsString()
   @Matches(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).*$/, {message: 'password too weak'})
   @Length(4, 100)
   password: string
 
-  @ApiProperty({ example: true, description: 'user banned?', default: false })
+  @ApiProperty({ example: true, description: 'user banned?', default: false, type: Boolean })
   @IsBoolean()
   banned: boolean
 
   @ApiProperty({
-    example: 'Frequently submitted bugs',
-    description: 'Reason for which the user is banned',
-    default: ' ',
+    example: 'Frequently submitted bugs', description: 'Reason for which the user is banned', default: ' ', type: String,
   })
   @IsString()
   banReason: string
 
+
+  @ApiProperty({
+    example: 'user role',
+    description: 'ADMIN',
+    default: 'USER',
+    type: String,
+  })
   @IsString()
   role: string
 }
