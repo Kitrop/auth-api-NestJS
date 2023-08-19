@@ -2,7 +2,7 @@ import { IsBoolean, IsEmail, IsString, Length, Matches } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class UserDto {
-  @ApiProperty({ example: 'user@email.com', description: 'user email' })
+  @ApiProperty({ example: 'user@email.com', description: 'user email', type: String })
   @IsEmail()
   email: string
 
@@ -44,9 +44,10 @@ export class GetUsersDto {
   role: string
 }
 
-export interface getUser {
+export class LoginUserDto {
+  @IsString()
   email: string
+
+  @IsString()
   password: string
-  banned: boolean
-  banReason: string
 }

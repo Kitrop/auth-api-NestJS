@@ -10,7 +10,7 @@ import { RolesModule } from './roles/roles.module';
   imports: [
     ConfigModule.forRoot(),
     AuthModule,
-    RolesModule
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
