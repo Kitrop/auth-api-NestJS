@@ -3,6 +3,8 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { GetUsersDto, LoginUserDto, UserDto } from '../dto/user.dto'
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt-auth.guard'
+import { Roles } from '../roles/roles.decorator'
+import { RolesGuard } from '../roles/roles.guard'
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -18,9 +20,9 @@ export class AuthController {
     return this.authService.createUser(user)
   }
 
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Получение пользователей' })
-  @ApiResponse({ status: 200, type: GetUsersDto, isArray: true })
+  @Roles("ADMIN")
+  @UseGuards(RolesGuard)
+
   @Get('users')
   getUsers() {
     return this.authService.getUsers()

@@ -39,7 +39,9 @@ export class AuthService {
     if (!candidate) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
-    const isValid = await compare(candidate.password, loginUser.password)
+    console.log(candidate.password)
+    console.log(loginUser.password)
+    const isValid = await compare(loginUser.password , candidate.password)
     if (!isValid) {
       throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED)
     }
@@ -53,7 +55,7 @@ export class AuthService {
   async generateToken(user: GenerateTokenDto) {
     const payload = {email: user.email, _id: user._id, role: user.role}
     return {
-      token: this.jwtService.sign(payload, )
+      token: this.jwtService.sign(payload)
     }
   }
 

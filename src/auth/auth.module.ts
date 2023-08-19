@@ -5,6 +5,7 @@ import { User, UserSchema } from '../schemas/user.schema'
 import { AuthController } from './auth.controller'
 import { JwtModule } from '@nestjs/jwt'
 import { JwtAuthGuard } from './jwt-auth.guard'
+import { RolesModule } from '../roles/roles.module'
 
 console.log(process.env.DB_URL)
 @Module({
@@ -17,6 +18,7 @@ console.log(process.env.DB_URL)
         expiresIn: '24h',
       },
     }),
+    RolesModule
   ],
   providers: [AuthService, JwtAuthGuard],
   controllers: [AuthController]
