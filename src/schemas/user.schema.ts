@@ -11,6 +11,7 @@ export class User {
     unique: true,
     required: true,
   })
+
   email: string
   @ApiProperty({
     example: 'R#k9P&mS@7eY\n', description: 'user strong password', })
@@ -30,6 +31,10 @@ export class User {
   })
   @Prop({ default: '' })
   banReason: string
+
+  @ApiProperty({ example: 'ADMIN', description: 'User role', default: 'USER' })
+  @Prop({ default: 'USER' })
+  role: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

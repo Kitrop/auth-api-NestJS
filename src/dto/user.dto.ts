@@ -1,4 +1,4 @@
-import { IsBoolean, IsEmail, IsString, Length } from 'class-validator'
+import { IsBoolean, IsEmail, IsString, Length, Matches } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class UserDto {
@@ -19,6 +19,7 @@ export class GetUsersDto {
 
   @ApiProperty({ example: 'R#k9P&mS@7eY\n', description: 'user strong password' })
   @IsString()
+  @Matches(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).*$/, {message: 'password too weak'})
   @Length(4, 100)
   password: string
 
@@ -33,6 +34,9 @@ export class GetUsersDto {
   })
   @IsString()
   banReason: string
+
+  @IsString()
+  role: string
 }
 
 export interface getUser {

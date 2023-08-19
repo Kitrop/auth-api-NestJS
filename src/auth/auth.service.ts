@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { UserDto } from '../dto/user.dto'
-import { User, UserDocument } from '../schemas/user.schema.'
+import { User, UserDocument } from '../schemas/user.schema'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { hash } from 'bcrypt'
