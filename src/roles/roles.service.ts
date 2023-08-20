@@ -1,9 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, UseGuards } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Role, RoleDocument } from '../schemas/role.schema'
 import { Model } from 'mongoose'
 import { CreateRoleDto } from '../dto/role.dto'
 import { User, UserDocument } from '../schemas/user.schema'
+import { Roles } from './roles.decorator'
+import { RolesGuard } from './roles.guard'
 
 @Injectable()
 export class RolesService {

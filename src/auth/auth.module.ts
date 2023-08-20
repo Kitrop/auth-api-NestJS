@@ -4,8 +4,9 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { User, UserSchema } from '../schemas/user.schema'
 import { AuthController } from './auth.controller'
 import { JwtModule } from '@nestjs/jwt'
-import { JwtAuthGuard } from './jwt-auth.guard'
+import { JwtAuthGuard } from '../token/jwt-auth.guard'
 import { RolesModule } from '../roles/roles.module'
+import { TokenModule } from '../token/token.module'
 
 console.log(process.env.DB_URL)
 @Module({
@@ -18,9 +19,10 @@ console.log(process.env.DB_URL)
         expiresIn: '24h',
       },
     }),
-    RolesModule
+    RolesModule,
+    TokenModule
   ],
-  providers: [AuthService, JwtAuthGuard],
+  providers: [AuthService],
   controllers: [AuthController]
 })
 export class AuthModule {}

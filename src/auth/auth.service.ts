@@ -4,14 +4,13 @@ import { User, UserDocument } from '../schemas/user.schema'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { compare, hash } from 'bcrypt'
-import { GenerateTokenDto } from '../dto/token.dto'
-import { JwtService } from '@nestjs/jwt'
+import { TokenService } from '../token/token.service'
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private readonly jwtService: JwtService
+    private readonly tokenService: TokenService
   ) {}
 
   // Создаем нового пользователя
@@ -27,7 +26,7 @@ export class AuthService {
       email: user.email,
       password: hashPassword,
     })
-    return this.generateToken({
+    return this.tokenService.generateToken({
       _id: newUser._id,
       email: newUser.email,
       role: newUser.role
@@ -39,25 +38,17 @@ export class AuthService {
     if (!candidate) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
-    console.log(candidate.password)
-    console.log(loginUser.password)
     const isValid = await compare(loginUser.password , candidate.password)
     if (!isValid) {
       throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED)
     }
-    return this.generateToken({
+    return this.tokenService.generateToken({
       email: candidate.email,
       _id: candidate._id,
       role: candidate.role
     })
   }
 
-  async generateToken(user: GenerateTokenDto) {
-    const payload = {email: user.email, _id: user._id, role: user.role}
-    return {
-      token: this.jwtService.sign(payload)
-    }
-  }
 
   async getUsers() {
     const users = await this.userModel.find()
