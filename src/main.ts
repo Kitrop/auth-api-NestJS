@@ -2,9 +2,8 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ValidationPipe } from '@nestjs/common'
-import helmet from 'helmet';
-import * as cookieParser from 'cookie-parser';
-
+import helmet from 'helmet'
+import * as cookieParser from 'cookie-parser'
 
 
 async function bootstrap() {
@@ -18,8 +17,19 @@ async function bootstrap() {
     .build()
   const app = await NestFactory.create(AppModule)
 
+  const cspConfig = {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'"],
+    },
+  };
+
   app.use(helmet())
-  app.enableCors();
+  app.use(helmet.contentSecurityPolicy(cspConfig))
+  app.enableCors()
   app.useGlobalPipes(new ValidationPipe())
 
   app.use(cookieParser())

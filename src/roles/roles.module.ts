@@ -7,6 +7,8 @@ import { User, UserSchema } from '../schemas/user.schema'
 import { RolesGuard } from './roles.guard'
 import { Roles } from './roles.decorator'
 import { JwtModule } from '@nestjs/jwt'
+import { TokenModule } from '../token/token.module'
+import { ConfigModule } from '@nestjs/config'
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { JwtModule } from '@nestjs/jwt'
       schema: UserSchema,
     }]),
     JwtModule.register({}),
+    TokenModule,
+    ConfigModule
   ],
   providers: [RolesService, RolesGuard],
   controllers: [RolesController],

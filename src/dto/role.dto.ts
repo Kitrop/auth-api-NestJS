@@ -10,7 +10,6 @@ export class CreateRoleDto {
 
 @Schema()
 export class GetRoleDto {
-
   @ApiProperty({
     example: 'user@email.com',
     description: 'Email address of the user to whom the role will be assigned',
