@@ -9,15 +9,13 @@ import { Roles } from './roles.decorator'
 import { JwtModule } from '@nestjs/jwt'
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Role.name, schema: RoleSchema }, {
-    name: User.name,
-    schema: UserSchema,
-  }]), JwtModule.register({
-    secret: 'secretKey',
-    signOptions: {
-      expiresIn: '24h',
-    },
-  })],
+  imports: [
+    MongooseModule.forFeature([{ name: Role.name, schema: RoleSchema }, {
+      name: User.name,
+      schema: UserSchema,
+    }]),
+    JwtModule.register({}),
+  ],
   providers: [RolesService, RolesGuard],
   controllers: [RolesController],
   exports: [RolesGuard],

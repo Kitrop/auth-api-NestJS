@@ -11,3 +11,11 @@ export class GenerateTokenDto {
   @IsString()
   role: string
 }
+
+
+export class TokensDto {
+  @IsString()
+  accessToken: string
+  @IsString()
+  refreshToken: string
+}

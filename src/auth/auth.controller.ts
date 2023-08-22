@@ -1,35 +1,37 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { GetUsersDto, LoginUserDto, UserDto } from '../dto/user.dto'
+import { Body, Controller, Get, HttpStatus, Post, Res, UseGuards } from '@nestjs/common'
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { LoginUserDto, UserDto } from '../dto/user.dto'
 import { AuthService } from './auth.service'
-import { JwtAuthGuard } from '../token/jwt-auth.guard'
-import { Roles } from '../roles/roles.decorator'
-import { RolesGuard } from '../roles/roles.guard'
+import { Response } from 'express'
+import { JwtAuthGuard } from './jwt-auth.guard'
+import { UserSchema } from '../schemas/user.schema'
 
 @ApiTags('AUTH')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    ) {}
+  ) {}
 
   @ApiOperation({ summary: 'Создание пользователя' })
-  @ApiResponse({ status: 201, type: UserDto })
+  @ApiResponse({ status: HttpStatus.CREATED, type: UserDto, description: 'User success created'})
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'User not created'})
+  @ApiBody({ required: true, description: 'body param'})
+  @ApiParam({ name: "user", example: { email: 'user@gmail.com', password: '12345' }, required: true })
   @Post('registration')
   createUser(@Body() user: UserDto) {
     return this.authService.createUser(user)
   }
 
-  @Roles("ADMIN")
-  @UseGuards(RolesGuard)
 
+  @UseGuards(JwtAuthGuard)
   @Get('users')
   getUsers() {
     return this.authService.getUsers()
   }
 
   @Post('login')
-  loginUser(@Body() loginUser: LoginUserDto) {
-    return this.authService.loginUser(loginUser)
+  loginUser(@Res({ passthrough: true }) res: Response, @Body() loginUser: LoginUserDto) {
+    return this.authService.loginUser(res, loginUser)
   }
 }
