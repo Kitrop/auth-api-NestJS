@@ -1,10 +1,12 @@
 import { Body, Controller, Get, HttpStatus, Post, Res, UseGuards } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { LoginUserDto, RegistrationUserError, UserDto } from '../dto/user.dto'
+import { DeleteUserDto, LoginUserDto, RegistrationUserError, UserDto } from '../dto/user.dto'
 import { AuthService } from './auth.service'
-import { Response } from 'express'
+import { Request, Response } from 'express'
 import { JwtAuthGuard } from './jwt-auth.guard'
-import { UserSchema } from '../schemas/user.schema'
+import { UnAuthorizeGuard } from './unAuthorize.guard'
+import { RolesGuard } from '../roles/roles.guard'
+import { Roles } from '../roles/roles.decorator'
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -18,6 +20,7 @@ export class AuthController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: RegistrationUserError,description: 'User not created'})
   @ApiBody({ required: true, description: 'Body required value'})
   @ApiParam({ name: "user", example: { email: 'user@gmail.com', password: '12345' }, required: true })
+  @UseGuards(UnAuthorizeGuard)
   @Post('registration')
   createUser(@Body() user: UserDto) {
     return this.authService.createUser(user)
@@ -30,8 +33,22 @@ export class AuthController {
     return this.authService.getUsers()
   }
 
+  @UseGuards(UnAuthorizeGuard)
   @Post('login')
   loginUser(@Res({ passthrough: true }) res: Response, @Body() loginUser: LoginUserDto) {
     return this.authService.loginUser(res, loginUser)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  logoutUser(@Res() res: Response) {
+    return this.authService.logout(res)
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @Post('delete')
+  deleteUser(@Body() deleteUser: DeleteUserDto) {
+    return this.authService.deleteUser(deleteUser._id)
   }
 }

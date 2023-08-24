@@ -57,3 +57,8 @@ export class RegistrationUserError {
   @ApiProperty({ type: Number, example: 400, description: 'Status code'})
   statusCode: number
 }
+
+export class DeleteUserDto {
+  @IsString()
+  _id: string
+}

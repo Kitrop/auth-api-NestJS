@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, Res } from '@nestjs/common'
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { LoginUserDto, UserDto } from '../dto/user.dto'
 import { User, UserDocument } from '../schemas/user.schema'
 import { InjectModel } from '@nestjs/mongoose'
@@ -134,5 +134,18 @@ export class AuthService {
         banReason: u.banReason,
       }
     })
+  }
+
+  logout(res: Response) {
+    res.clearCookie('accessToken')
+    throw new HttpException('User logout', HttpStatus.OK )
+  }
+
+  async deleteUser(_id: string) {
+    const deleteUserResult = await this.userModel.deleteOne({ _id })
+    console.log(deleteUserResult.deletedCount)
+    if (deleteUserResult.deletedCount !== 1) throw new BadRequestException('User not delete')
+
+    throw new HttpException('User delete', HttpStatus.NO_CONTENT)
   }
 }
