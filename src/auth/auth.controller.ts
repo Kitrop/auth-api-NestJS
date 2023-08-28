@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Res, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, HttpStatus, Post, Query, Res, UseGuards } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { DeleteUserDto, LoginUserDto, RegistrationUserError, UserDto } from '../dto/user.dto'
 import { AuthService } from './auth.service'
@@ -26,13 +26,6 @@ export class AuthController {
     return this.authService.createUser(user)
   }
 
-
-  @UseGuards(JwtAuthGuard)
-  @Get('users')
-  getUsers() {
-    return this.authService.getUsers()
-  }
-
   @UseGuards(UnAuthorizeGuard)
   @Post('login')
   loginUser(@Res({ passthrough: true }) res: Response, @Body() loginUser: LoginUserDto) {
@@ -51,4 +44,17 @@ export class AuthController {
   deleteUser(@Body() deleteUser: DeleteUserDto) {
     return this.authService.deleteUser(deleteUser._id)
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('users')
+  getUsers(@Query('email') email: string) {
+    return this.authService.getUsers(email)
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('user')
+  getUsersById(@Body('_id') _id: string) {
+    return this.authService.getUserById(_id)
+  }
+
+
 }

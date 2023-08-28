@@ -123,17 +123,36 @@ export class AuthService {
     }
   }
 
-  // Получение всех пользователей
-  async getUsers() {
-    const users = await this.userModel.find()
-    return users.map((u) => {
+  // Получение пользователей/пользователя
+  async getUsers(email: string) {
+    let users
+    if (email) {
+      users = await this.userModel.find({  email: { $regex: `^${email}`, $options: 'i' } })
+    }
+    else {
+      users = await this.userModel.find()
+    }
+    return users.map(u => {
       return {
         _id: u._id,
         email: u.email,
+        role: u.role,
         banned: u.banned,
-        banReason: u.banReason,
+        banReason: u.banReason
       }
     })
+  }
+
+  async getUserById(_id: string) {
+    const user = await this.userModel.findOne({ _id })
+    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+    return {
+      _id: user._id,
+      email: user.email,
+      role: user.role,
+      banned: user.banned,
+      banReason: user.banReason
+    }
   }
 
   logout(res: Response) {
