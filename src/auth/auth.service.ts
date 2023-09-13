@@ -77,7 +77,7 @@ export class AuthService {
     await this.tokenService.saveToken(candidate._id, token)
 
     // Добавление accessToken в cookie
-    res.cookie('accessToken', token.accessToken, { httpOnly: true })
+    res.cookie('accessToken', token.accessToken, { httpOnly: false, sameSite: 'none'})
 
     return {
       email: candidate.email,

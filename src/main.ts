@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ValidationPipe } from '@nestjs/common'
 import helmet from 'helmet'
 import * as cookieParser from 'cookie-parser'
+import * as session from 'express-session';
 
 
 async function bootstrap() {
@@ -19,20 +20,36 @@ async function bootstrap() {
 
   const cspConfig = {
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc: ["'self'"],
+      defaultSrc: ["'self'", "http:localhost:3000"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "http:localhost:3000"],
+      styleSrc: ["'self'", "'unsafe-inline'", "http:localhost:3000"],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com', "http:localhost:3000"],
+      imgSrc: ["'self'", "http:localhost:3000"],
     },
   };
 
   app.use(helmet())
   app.use(helmet.contentSecurityPolicy(cspConfig))
-  app.enableCors()
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  })
   app.useGlobalPipes(new ValidationPipe())
 
   app.use(cookieParser())
+  app.use(
+    session({
+      secret: ['secretKey'],
+      cookie: {
+        secret: 'secretKey',
+        sameSite: 'strict',
+        secure: true,
+        httpOnly: false,
+        maxAge: 24 * 60,
+      },
+    })
+  );
 
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('/api/docs', app, document)

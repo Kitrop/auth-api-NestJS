@@ -56,7 +56,9 @@ export class TokenService {
     // Верифицируем refreshToken, если все прошло успешно получаем данные из refreshToken
     const verifyRefreshToken = await this.jwtService.verify(
       tokens.refreshToken,
-      {secret: this.configService.get('PRIVATE_KEY')}
+      {
+        secret: this.configService.get('PRIVATE_KEY'),
+      }
     )
 
     // Если произошла ошибка при верификации refreshToken
